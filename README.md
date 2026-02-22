@@ -1,7 +1,7 @@
 CaterMe v4.5.0 — Complete WooCommerce Integration
 ✅ FULLY IMPLEMENTED — Ready to Deploy
 
-What's New in v4.3.0
+What's New 
 1. Blackout Date System
 Block specific days or dates for pickup and/or delivery.
 Settings → Availability Tab:
