@@ -1,4 +1,4 @@
-CaterMe v4.3.0 — Complete WooCommerce Integration
+CaterMe v4.5.0 — Complete WooCommerce Integration
 ✅ FULLY IMPLEMENTED — Ready to Deploy
 
 What's New in v4.3.0
