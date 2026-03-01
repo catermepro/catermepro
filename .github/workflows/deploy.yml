@@ -1,0 +1,63 @@
+name: Test and Deploy on Freemius
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., 4.5.1)'
+        required: true
+        type: string
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
+          extensions: mbstring, intl, gd, mysql
+          tools: composer:v2
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Run PHPUnit tests
+        run: composer test
+
+  release:
+    name: Create Release
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ github.event.inputs.version }}
+          release_name: Release v${{ github.event.inputs.version }}
+          draft: false
+          prerelease: false
+
+  deploy:
+    name: Deploy on Freemius
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy on Freemius
+        uses: buttonizer/freemius-deploy@v0.1.3
+        with:
+          version: ${{ github.event.inputs.version }}
+          freemius_api_key: ${{ secrets.FREEMIUS_API_KEY }}
+          freemius_secret_key: ${{ secrets.FREEMIUS_SECRET_KEY }}
